@@ -105,10 +105,18 @@ class SignupComponent extends React.Component {
     switch (type){
       case 'email':
         this.setState({ email: e.target.value })
+        break;
+        
       case 'password':
         this.setState({ password: e.target.value })
+        break;
+
       case 'passwordConfirmation':
         this.setState({ passwordConfirmation: e.target.value })
+        break;
+
+      default:
+        break;
     }
   }
     
