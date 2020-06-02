@@ -40,7 +40,7 @@ class DashboardComponent extends React.Component {
           }
           {
             this.state.selectedChat !== null && !this.state.newChatFormVisible ?
-              <ChatTextBoxComponent submitMessageFn={this.submitMessage}/> :
+              <ChatTextBoxComponent messageReadFn={this.messageRead} submitMessageFn={this.submitMessage}/> :
               null
           }
         <Button className={classes.signOutBtn} onClick={this.signOut}>Sign Out</Button>

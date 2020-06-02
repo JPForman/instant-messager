@@ -38,7 +38,7 @@ class ChatTextBoxComonent extends React.Component {
     }
   }
 
-  userClickedInput = () => console.log('clicked input');
+  userClickedInput = () => this.props.messageReadFn();
 }
 
 export default withStyles(styles)(ChatTextBoxComonent);
