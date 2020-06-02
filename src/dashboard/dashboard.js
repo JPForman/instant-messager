@@ -4,6 +4,7 @@ import { Button, withStyles } from '@material-ui/core';
 import styles from './styles';
 import ChatViewComponent from '../chatView/chatView';
 import ChatTextBoxComponent from  '../chatTextBox/ChatTextBox'
+import NewChatComponent from  '../newChatComponent/newChatComponent'
 const firebase = require('firebase');
 
 class DashboardComponent extends React.Component {
@@ -42,6 +43,9 @@ class DashboardComponent extends React.Component {
             this.state.selectedChat !== null && !this.state.newChatFormVisible ?
               <ChatTextBoxComponent messageReadFn={this.messageRead} submitMessageFn={this.submitMessage}/> :
               null
+          }
+          {
+            this.state.newChatFormVisible ? <NewChatComponent goToChatFn={this.goToChat} newChatSubmitFn={this.newChatSubmit} /> : null
           }
         <Button className={classes.signOutBtn} onClick={this.signOut}>Sign Out</Button>
       </div>
@@ -88,6 +92,33 @@ class DashboardComponent extends React.Component {
     } else {
       console.log('Clicked message where the user was the sendeer')
     }
+  }
+
+  goToChat = async (docKey, msg) => {
+    const usersInChat = docKey.split(':');
+    const chat = this.state.chats.find(_chat => usersInChat.every(_user => _chat.users.includes(_user)));
+    this.setState({ newChatFormVisible: false });
+    await this.selectChat(this.state.chats.indexOf(chat));
+    this.submitMessage(msg);
+  }
+
+  newChatSubmit = async (chatObj) => {
+    const docKey = this.buildDocKey(chatObj.sendTo);
+    await 
+      firebase
+        .firestore()
+        .collection('chats')
+        .doc(docKey)
+        .set({
+          messages: [{
+            message: chatObj.message,
+            sender: this.state.email
+          }],
+          users: [this.state.email, chatObj.sendTo],
+          receiverHasRead: false
+        })
+    this.setState({ newChatFormVisible: false });
+    this.selectChat(this.state.chats.length - 1);
   }
 
   componentDidMount = () => {
